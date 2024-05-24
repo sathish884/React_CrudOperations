@@ -1,43 +1,42 @@
 import React from 'react';
 import {
-    UploadOutlined,
+    // UploadOutlined,
     UserOutlined,
     VideoCameraOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Menu, Breadcrumb } from 'antd';
 
+import { Link, useNavigate } from 'react-router-dom';
 
+export const menuData = [
+    { key: '1', icon: UserOutlined, label: 'Dashboard', path: '/' },
+    { key: '2', icon: VideoCameraOutlined, label: 'Read Component', path: '/read' }
+];
 
-function Sidebar() {
+function Sidebar({ onSelectLabel }) {
 
-    // const [collapsed, setCollapsed] = useState(false);
+    const menuItems = menuData.map((item) => ({
+        key: item.key,
+        icon: React.createElement(item.icon),
+        label: <Link to={item.path}>{item.label}</Link>,
+    }));
 
+    const handleMenuSelect = (label) => {
+        onSelectLabel(label);
+    };
 
     return (
         <>
+
             <div className="demo-logo-vertical" />
-            <Menu
-                theme="dark"
-                mode="inline"
-                defaultSelectedKeys={['1']}
-                items={[
-                    {
-                        key: '1',
-                        icon: <UserOutlined />,
-                        label: 'nav 1',
-                    },
-                    {
-                        key: '2',
-                        icon: <VideoCameraOutlined />,
-                        label: 'nav 2',
-                    },
-                    {
-                        key: '3',
-                        icon: <UploadOutlined />,
-                        label: 'nav 3',
-                    },
-                ]}
-            />
+
+            <Menu theme="dark" mode="inline" onSelect={({ key }) => handleMenuSelect(key)}>
+                {menuItems.map(item => (
+                    <Menu.Item key={item.key} icon={item.icon}>
+                        <Link to={item.path}>{item.label}</Link>
+                    </Menu.Item>
+                ))}
+            </Menu>
         </>
     )
 }

@@ -7,21 +7,16 @@ import {
     MenuUnfoldOutlined
 } from '@ant-design/icons';
 
-function HeaderCom() {
+function HeaderCom({ state, setState }) {
 
-    const [collapsed, setCollapsed] = useState(false);
-
-    // const {
-    //     token: { colorBgContainer, borderRadiusLG },
-    // } = theme.useToken();
 
     return (
         <>
 
             <Button
                 type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
+                icon={state ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setState(!state)}
                 style={{
                     fontSize: '16px',
                     width: 64,
