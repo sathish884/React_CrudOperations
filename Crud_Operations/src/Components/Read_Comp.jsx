@@ -1,49 +1,86 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import Create_Component from './Create_Component';
+import { Table } from 'antd';
+import axios from 'axios';
+import ProductsData from '../data.json';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import Update_Comp from './Update_Comp';
+
 
 function Read_Comp() {
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [userData, setUserData] = useState([])
 
-    const showModal = () => {
-        setIsModalOpen(true);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const handleEdit = (record) => {
+        // setEditingRecord(record);
+        // form.setFieldsValue(record); // Set form fields with the selected record
+        setIsEditModalOpen(true);
     };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+
+    const columns = [
+        {
+            title: 'Id',
+            dataIndex: 'key',
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+        },
+        {
+            title: 'Stock',
+            dataIndex: 'stock',
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+                <>
+                    <EditOutlined onClick={() => handleEdit(record)} style={{ marginRight: 10 }} />
+                    <DeleteOutlined onClick={() => handleDelete(record.key)} style={{ color: 'red' }} />
+                </>
+            ),
+        },
+    ];
+
+
+    useEffect(() => {
+        const getUserList = async () => {
+            try {
+                // const response = await axios.get("https://jsonplaceholder.typicode.com/posts")
+                // console.log(response);
+                setUserData(ProductsData.products)
+                // console.log(ProductsData);
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        getUserList();
+
+    }, []);
+
+
+    const data = userData.map((items, index) => ({
+        key: index + 1,
+        title: items.title,
+        price: items.price,
+        stock: items.stock,
+    }))
+
     return (
         <>
-            <Button type="primary" onClick={showModal}>
-                Open Modal
-            </Button>
 
-            <Create_Component isModalOpen={isModalOpen}
-                handleOk={handleOk}
-                handleCancel={handleCancel} />
+            <Create_Component />
 
-            <table className="table table-hover">
-                <thead className="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                </tbody>
-            </table>
+            <Table columns={columns} dataSource={data} size="middle" />
 
+            <Update_Comp isEditModal={isEditModalOpen} setEditModal={setIsEditModalOpen} />
 
         </>
 
