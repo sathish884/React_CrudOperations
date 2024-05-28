@@ -3,27 +3,54 @@ import { Button } from 'antd';
 import Create_Component from './Create_Component';
 import { Table } from 'antd';
 import axios from 'axios';
-import ProductsData from '../data.json';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Update_Comp from './Update_Comp';
+import { getUsers, deleteUser } from '../Services/api';
 
 
 function Read_Comp() {
 
     const [userData, setUserData] = useState([])
 
+    const [editingUser, setEditingUser] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const handleEdit = (record) => {
-        // setEditingRecord(record);
-        // form.setFieldsValue(record); // Set form fields with the selected record
-        setIsEditModalOpen(true);
+    useEffect(() => {
+        fetchItems();
+    }, []);
+
+
+    // Get user lists
+    const fetchItems = async () => {
+        try {
+            //  const response = await getUsers();
+            setUserData(response.data);
+        } catch (error) {
+            message.error('Failed to fetch items');
+        }
+    };
+
+    // User edit
+    const handleEdit = (user) => {
+        setEditingUser(user);
+        setIsModalVisible(true);
+    };
+
+    // Delete user list
+    const handleDelete = async (key) => {
+        try {
+            //   await deleteUser(key);
+            message.success('Item deleted successfully');
+            fetchItems();
+        } catch (error) {
+            message.error('Failed to delete item');
+        }
     };
 
     const columns = [
         {
             title: 'Id',
-            dataIndex: 'key',
+            dataIndex: 'key'
         },
         {
             title: 'Title',
@@ -32,10 +59,12 @@ function Read_Comp() {
         {
             title: 'Price',
             dataIndex: 'price',
+
         },
         {
             title: 'Stock',
             dataIndex: 'stock',
+
         },
         {
             title: 'Actions',
@@ -43,28 +72,18 @@ function Read_Comp() {
             render: (_, record) => (
                 <>
                     <EditOutlined onClick={() => handleEdit(record)} style={{ marginRight: 10 }} />
-                    <DeleteOutlined onClick={() => handleDelete(record.key)} style={{ color: 'red' }} />
+                    <Popconfirm
+                        title="Are you sure you want to delete this item?"
+                        onConfirm={() => handleDelete(record.id)}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <DeleteOutlined style={{ color: 'red', cursor: 'pointer' }} />
+                    </Popconfirm>
                 </>
             ),
         },
     ];
-
-
-    useEffect(() => {
-        const getUserList = async () => {
-            try {
-                // const response = await axios.get("https://jsonplaceholder.typicode.com/posts")
-                // console.log(response);
-                setUserData(ProductsData.products)
-                // console.log(ProductsData);
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        getUserList();
-
-    }, []);
-
 
     const data = userData.map((items, index) => ({
         key: index + 1,
@@ -75,16 +94,12 @@ function Read_Comp() {
 
     return (
         <>
-
             <Create_Component />
 
-            <Table columns={columns} dataSource={data} size="middle" />
+            <Table columns={columns} dataSource={data} size="middle" style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", borderRadius: "10px" }} />
 
-            <Update_Comp isEditModal={isEditModalOpen} setEditModal={setIsEditModalOpen} />
-
+            <Update_Comp isEditModal={isEditModalOpen} setEditModal={setIsEditModalOpen} user={editingUser} />
         </>
-
-
     )
 }
 

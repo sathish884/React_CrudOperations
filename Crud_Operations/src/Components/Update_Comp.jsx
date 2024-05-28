@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, Button, Space } from 'antd';
+import { updateUser } from '../Services/api';
 
-function Update_Comp({ isEditModal, setEditModal }) {
+function Update_Comp({ user, isEditModal, setEditModal }) {
 
     const [form] = Form.useForm(); // Creating a form instance
 
@@ -10,27 +11,30 @@ function Update_Comp({ isEditModal, setEditModal }) {
         //  onReset()
     }
 
+    useEffect(() => {
+        if (user) {
+            form.setFieldsValue(user);
+        }
+    }, [user, form]);
+
+
     const onFinish = async (values) => {
         try {
-            // console.log('Received values:', values);
-            // const response = await axios.post("https://jsonplaceholder.typicode.com/posts", values, {
-            //     headers: {
-            //         'Content-Type': 'application/json; charset=UTF-8',
-            //     },
-            // });
+            const response = await updateUser(user.id, values);
             console.log('Response:', values); // Log the response data
+            // Show a success message
+            message.success('User updated successfully');
             handleCancel()
         } catch (error) {
-            console.error('Error:', error); // Log any errors that occur
+            // Show an error message
+            message.error('Failed to update user');
         }
     };
-
-
 
     return (
         <>
             <Modal title="Edit Products"
-                open={isEditModal} // Use 'visible' if you are using an older version of Ant Design
+                open={isEditModal} // Use to 'visible' the modal
                 footer={null} // Custom footer to remove default OK and Cancel buttons
                 onCancel={handleCancel}>
 
@@ -83,7 +87,7 @@ function Update_Comp({ isEditModal, setEditModal }) {
                     <Form.Item>
                         <Space style={{ float: "right" }}>
                             <Button type="primary" htmlType="submit">
-                                Submit
+                                Update
                             </Button>
                             <Button type="primary" htmlType="button" onClick={handleCancel}>
                                 Cancel

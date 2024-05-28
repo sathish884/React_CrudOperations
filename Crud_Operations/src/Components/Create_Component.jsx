@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, Form, Input, Button, Space } from 'antd';
 import axios from 'axios';
+import { createUser } from '../Services/api'
 
 function Create_Component({ addData }) {
 
@@ -17,16 +18,16 @@ function Create_Component({ addData }) {
 
     const [form] = Form.useForm(); // Creating a form instance
 
+    console.log("forms", form);
 
-    const onFinish = async (values) => {
+
+    const onFinishForm = async (values) => {
         try {
             // console.log('Received values:', values);
-            // const response = await axios.post("https://jsonplaceholder.typicode.com/posts", values, {
-            //     headers: {
-            //         'Content-Type': 'application/json; charset=UTF-8',
-            //     },
-            // });
+            // const response = await createUser(values)
+            //  message.success('Item created successfully');
             console.log('Response:', values); // Log the response data
+
             handleCancel()
         } catch (error) {
             console.error('Error:', error); // Log any errors that occur
@@ -62,7 +63,7 @@ function Create_Component({ addData }) {
                 footer={null} // Custom footer to remove default OK and Cancel buttons
                 onCancel={handleCancel}
             >
-                <Form form={form} onFinish={onFinish} labelCol={{
+                <Form form={form} onFinish={onFinishForm} labelCol={{
                     span: 24,
                 }}
                     wrapperCol={{
