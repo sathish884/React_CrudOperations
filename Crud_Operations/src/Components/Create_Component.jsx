@@ -1,120 +1,63 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Space } from 'antd';
-import axios from 'axios';
-import { createUser } from '../Services/api'
+import { createUser } from '../Services/api';
 
 function Create_Component({ addData }) {
-
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form] = Form.useForm();
 
-    const onReset = () => {
+    const handleCancel = () => {
+        setIsModalOpen(false);
         form.resetFields();
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false)
-        onReset()
-    }
-
-    const [form] = Form.useForm(); // Creating a form instance
-
-    console.log("forms", form);
-
-
     const onFinishForm = async (values) => {
         try {
-            // console.log('Received values:', values);
-            // const response = await createUser(values)
-            //  message.success('Item created successfully');
-            console.log('Response:', values); // Log the response data
-
-            handleCancel()
+            const response = await createUser(values);
+            console.log('Response:', response); // Log the response data
+            addData(response); // Update parent component with the new data
+            handleCancel();
         } catch (error) {
             console.error('Error:', error); // Log any errors that occur
         }
     };
 
-
-    // fetch('https://jsonplaceholder.typicode.com/posts', {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //         title: 'foo',
-    //         body: 'bar',
-    //         userId: 1,
-    //     }),
-    //     headers: {
-    //         'Content-type': 'application/json; charset=UTF-8',
-    //     },
-    // })
-    //     .then((response) => response.json())
-    //     .then((json) => console.log(json));
-
-
-
-
     return (
         <>
-            <Button type="primary" onClick={() => setIsModalOpen(true)} style={{ float: "right", marginBottom: "20px" }}>
-                Add Products+
+            <Button
+                type="primary"
+                onClick={() => setIsModalOpen(true)}
+                style={{ float: 'right', marginBottom: '20px' }}
+            >
+                Add Product+
             </Button>
             <Modal
-                title="Add Products"
-                open={isModalOpen} // Use 'visible' if you are using an older version of Ant Design
-                footer={null} // Custom footer to remove default OK and Cancel buttons
+                title="Add Product"
+                open={isModalOpen}
+                footer={null}
                 onCancel={handleCancel}
             >
-                <Form form={form} onFinish={onFinishForm} labelCol={{
-                    span: 24,
-                }}
-                    wrapperCol={{
-                        span: 24,
-                    }}
-                >
+                <Form form={form} onFinish={onFinishForm} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
                     <Form.Item
-                        name="product name"
-                        label="Product Name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Product name is required!',
-                            },
-                        ]}
+                        name="title"
+                        label="Title"
+                        rules={[{ required: true, message: 'Title is required!' }]}
                     >
                         <Input />
                     </Form.Item>
-
                     <Form.Item
-                        name="quantity"
-                        label="Quantity"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Quantity is required!',
-                            },
-                        ]}
+                        name="body"
+                        label="Description"
+                        rules={[{ required: true, message: 'Description is required!' }]}
                     >
                         <Input />
                     </Form.Item>
-
-                    <Form.Item
-                        name="price"
-                        label="Price"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Price is required!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
                     <Form.Item>
-                        <Space style={{ float: "right" }}>
+                        <Space style={{ float: 'right' }}>
                             <Button type="primary" htmlType="submit">
                                 Submit
                             </Button>
-                            <Button type="primary" htmlType="button" onClick={handleCancel}>
+                            <Button htmlType="button" onClick={handleCancel}>
                                 Cancel
                             </Button>
                         </Space>
@@ -122,7 +65,7 @@ function Create_Component({ addData }) {
                 </Form>
             </Modal>
         </>
-    )
+    );
 }
 
-export default Create_Component
+export default Create_Component;

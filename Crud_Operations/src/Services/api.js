@@ -1,12 +1,19 @@
 import axios from 'axios';
 
-const API_URL = 'https://jsonplaceholder.typicode.com/'; // Replace with your API endpoint
+export const getUsers = async () => {
+    return await axios.get('https://jsonplaceholder.typicode.com/posts');
+};
 
-const headerCon = {
-    'Content-Type': 'application/json; charset=UTF-8',
-}
+export const createUser = async (userData) => {
+    const response = await axios.post('https://jsonplaceholder.typicode.com/posts', userData);
+    return response.data;
+};
 
-export const getUsers = () => axios.get(API_URL, { headers: headerCon });
-export const createUser = (body) => axios.post(API_URL + "posts", body, { headers: headerCon });
-export const updateUser = (id, body) => axios.put(`${API_URL}/${id}`, body, { headers: headerCon });
-export const deleteUser = (id) => axios.delete(`${API_URL}/${id}`, { headers: headerCon });
+export const deleteUser = async (id) => {
+    return await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
+};
+
+export const updateUser = async (id, userData) => {
+    const response = await axios.put(`https://jsonplaceholder.typicode.com/posts/${id}`, userData);
+    return response.data;
+};

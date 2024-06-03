@@ -2,102 +2,69 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Button, Space } from 'antd';
 import { updateUser } from '../Services/api';
 
-function Update_Comp({ user, isEditModal, setEditModal }) {
-
-    const [form] = Form.useForm(); // Creating a form instance
-
-    const handleCancel = () => {
-        setEditModal(false)
-        //  onReset()
-    }
+function Update_Comp({ isEditModalOpen, setIsEditModalOpen, user, fetchItems }) {
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (user) {
-            form.setFieldsValue(user);
+            form.setFieldsValue({
+                title: user.title,
+                body: user.body,
+            });
         }
     }, [user, form]);
 
+    const handleCancel = () => {
+        setIsEditModalOpen(false);
+        form.resetFields();
+    };
 
-    const onFinish = async (values) => {
+    const onFinishForm = async (values) => {
         try {
             const response = await updateUser(user.id, values);
-            console.log('Response:', values); // Log the response data
-            // Show a success message
-            message.success('User updated successfully');
-            handleCancel()
+            console.log('Updated:', response);
+            fetchItems(); // Fetch items to reflect the updated data
+            handleCancel();
         } catch (error) {
-            // Show an error message
-            message.error('Failed to update user');
+            console.error('Error:', error); // Log any errors that occur
         }
     };
 
     return (
-        <>
-            <Modal title="Edit Products"
-                open={isEditModal} // Use to 'visible' the modal
-                footer={null} // Custom footer to remove default OK and Cancel buttons
-                onCancel={handleCancel}>
-
-                <Form form={form} onFinish={onFinish} labelCol={{
-                    span: 24,
-                }}
-                    wrapperCol={{
-                        span: 24,
-                    }}
+        <Modal
+            title="Edit Product"
+            open={isEditModalOpen}
+            footer={null}
+            onCancel={handleCancel}
+        >
+            <Form form={form} onFinish={onFinishForm} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                <Form.Item
+                    name="title"
+                    label="Title"
+                    rules={[{ required: true, message: 'Title is required!' }]}
                 >
-                    <Form.Item
-                        name="product name"
-                        label="Product Name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Product name is required!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="quantity"
-                        label="Quantity"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Quantity is required!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="price"
-                        label="Price"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Price is required!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-
-                    <Form.Item>
-                        <Space style={{ float: "right" }}>
-                            <Button type="primary" htmlType="submit">
-                                Update
-                            </Button>
-                            <Button type="primary" htmlType="button" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
-            </Modal >
-        </>
-    )
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="body"
+                    label="Description"
+                    rules={[{ required: true, message: 'Description is required!' }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item>
+                    <Space style={{ float: 'right' }}>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                        <Button htmlType="button" onClick={handleCancel}>
+                            Cancel
+                        </Button>
+                    </Space>
+                </Form.Item>
+            </Form>
+        </Modal>
+    );
 }
 
-export default Update_Comp
+export default Update_Comp;
