@@ -6,7 +6,28 @@ function UserForm({ user, onSave, onCancel }) {
     // State to manage form data with default values for name and email
     const [formData, setFormData] = useState({ name: '', email: '' });
 
-     // useEffect to set form data if user prop is passed
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        let newErrors = {};
+    
+        if (!formData.name || formData.name.trim() === '') {
+            newErrors.name = 'Name is required';
+        }
+    
+        if (!formData.email || formData.email.trim() === '') {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Email is invalid';
+        }
+    
+        setErrors(newErrors);
+    
+        // Return true if there are no errors, false otherwise
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // useEffect to set form data if user prop is passed
     useEffect(() => {
         if (user) {
             // Set form data with user details if user exists
@@ -25,7 +46,10 @@ function UserForm({ user, onSave, onCancel }) {
         // Prevent default form submission behavior
         e.preventDefault();
         // Call onSave prop function with form data
-        onSave(formData);
+        if(validateForm()){
+            onSave(formData)
+        }
+
     }
 
     return (
@@ -40,7 +64,8 @@ function UserForm({ user, onSave, onCancel }) {
                     type='text'
                     fullWidth
                     value={formData.name}
-                    onChange={handleChange}></TextField>
+                    onChange={handleChange} error={!!errors.name} helperText={errors.name}></TextField>
+
                 <TextField
                     autoFocus
                     margin='dense'
@@ -49,13 +74,13 @@ function UserForm({ user, onSave, onCancel }) {
                     type='email'
                     fullWidth
                     value={formData.email}
-                    onChange={handleChange}></TextField>
+                    onChange={handleChange} error={!!errors.email} helperText={errors.email}></TextField>
             </DialogContent>
             <DialogActions>
-                 {/* Cancel button to close the dialog */}
-                <Button variant="contained" onClick={onCancel} color='secondary' style={{color:"white"}}>Cancel</Button>
+                {/* Cancel button to close the dialog */}
+                <Button variant="contained" onClick={onCancel} color='secondary' style={{ color: "white" }}>Cancel</Button>
                 {/* Save button to submit the form */}
-                <Button variant="contained" onClick={handleSubmit} style={{backgroundColor:"blue", color:"white"}}>Save</Button>
+                <Button variant="contained" onClick={handleSubmit} style={{ backgroundColor: "blue", color: "white" }}>Save</Button>
             </DialogActions>
         </Dialog>
     )
