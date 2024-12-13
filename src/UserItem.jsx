@@ -15,10 +15,10 @@ function UserItem({ user, onEdit, onDelete }) {
                 </CardContent>
                 <CardActions>
                    {/* Button for editing the user, calls onEdit with the user data */}
-                    <Button size="small" variant="contained"
+                    {/* <Button size="small" variant="contained"
                         onClick={() => onEdit(user)} style={{color:"white", fontWeight:"bold"}}>
                        <i class="bi bi-pencil-square"></i>&nbsp; Edit
-                    </Button>
+                    </Button> */}
                     {/* Button for deleting the user, calls onDelete with the user ID */}
                     {/* <Button size="small" color='secondary' variant="contained"
                         onClick={() => onDelete(user.id)} style={{color:"white", fontWeight:"bold"}}>
