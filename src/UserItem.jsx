@@ -20,10 +20,10 @@ function UserItem({ user, onEdit, onDelete }) {
                        <i class="bi bi-pencil-square"></i>&nbsp; Edit
                     </Button>
                     {/* Button for deleting the user, calls onDelete with the user ID */}
-                    {/* <Button size="small" color='secondary' variant="contained"
+                    <Button size="small" color='secondary' variant="contained"
                         onClick={() => onDelete(user.id)} style={{color:"white", fontWeight:"bold"}}>
                        <i class="bi bi-trash-fill"></i>&nbsp; Delete
-                    </Button> */}
+                    </Button>
                 </CardActions>
             </Card>
         </Grid>
